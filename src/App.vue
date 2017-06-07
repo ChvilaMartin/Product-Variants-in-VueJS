@@ -12,15 +12,15 @@
             <input type="text" name="option-name" v-model="newOptionName" id="namesearch" v-on:keyup.enter="newOptionName = matches[0]">
             <input type="text" id="search" v-model="matches[0]" disabled="true">
             <input type="text" id="value" name="option-value" v-model="newOptionValue" v-on:keyup.enter="saveNewOption">
-            <button class="btn btn-primary btn-sm" id="saveBtn" @click.prevent="saveNewOption">Save</button>
+            <button class="btn btn-primary btn-sm" id="saveBtn" @click.prevent="saveNewOption"> + </button>
         </div>
         <br>
         <hr>
 
         <div v-for="(option, index) in options">
-            <input type="text" :name="'option-name-' + index" v-model="options[index].name">
-            <input type="text" :name="'option-value-' + index" v-model="options[index].value">
-            <button class="btn btn-danger btn-sm" @click.prevent="removeOption(index)">Remove</button>
+            <input type="text" :name="'options['+index+'][name]'" v-model="options[index].name">
+            <input type="text" :name="'options['+index+'][value]'" v-model="options[index].value">
+            <button class="btn btn-danger btn-sm" @click.prevent="removeOption(index)"> X </button>
         </div>
 
         <hr>
@@ -40,9 +40,9 @@
                 newOptionValue: '',
 
                 options: [
-                    {name: "Barva", value: "Cervena, Hneda, Modra"},
-                    {name: "Velikost", value: "M, L, XL"},
-                    {name: "Material", value: "Bavlna, Latka"}
+                    {name: "Barva", value: "Cervena, Hneda"},
+                    {name: "Velikost", value: "M, L"},
+                    // {name: "Material", value: "Bavlna, Latka"}
                 ],
 
                 attributes: [
