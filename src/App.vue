@@ -1,36 +1,39 @@
 <template>
-
-    <div id="app" class="container">
-        <h1 class="text-center">
-            VariantWidget
-        </h1>
-
-        <p>
-            <b>Naseptavam: </b> <span v-for="att in attributes"><i>{{att}} </i></span> (toto budem tahat ze serveru)
-        </p>
-        <div style="position: relative">
-            <input type="text" name="option-name" v-model="newOptionName" id="namesearch" v-on:keyup.enter="newOptionName = matches[0]">
-            <input type="text" id="search" v-model="matches[0]" disabled="true">
-            <input type="text" id="value" name="option-value" v-model="newOptionValue" v-on:keyup.enter="saveNewOption">
-            <button class="btn btn-primary btn-sm" id="saveBtn" @click.prevent="saveNewOption"> + </button>
+    <div id="variantsWidgetApp" class="container">
+        <div class="rowtext-center" v-if="!update">
+            <div class="col-xs-5"><input class="form-control" type="text" name="option-name" v-model="newOptionName"
+                                         v-on:keyup.enter="newOptionName = matches[0]"></div>
+            <!--<input type="text" id="search" v-model="matches[0]" disabled="true">-->
+            <div class="col-xs-5"><input class="form-control" type="text" name="option-value" v-model="newOptionValue"
+                                         v-on:keyup.enter="saveNewOption"></div>
+            <div class="col-xs-1">
+                <a href="#" class="btn btn-primary btn-sm " @click.prevent="saveNewOption">
+                    Add
+                </a>
+            </div>
         </div>
         <br>
         <hr>
-
-        <div v-for="(option, index) in options">
-            <input type="text" :name="'options['+index+'][name]'" v-model="options[index].name">
-            <input type="text" :name="'options['+index+'][value]'" v-model="options[index].value">
-            <button class="btn btn-danger btn-sm" @click.prevent="removeOption(index)"> X </button>
+        <div v-for="(option, index) in options" class="row m-t text-center">
+            <div class="col-xs-5"><input class="form-control" type="text" :name="'options['+index+'][name]'"
+                                         v-model="options[index].name"></div>
+            <div class="col-xs-5"><input class="form-control col-sm-4" type="text" :name="'options['+index+'][value]'"
+                                         v-model="options[index].value"></div>
+            <div class="col-xs-1">
+                <button class="btn btn-danger btn-sm" @click.prevent="removeOption(index)"> X </button>
+            </div>
         </div>
-
-        <hr>
-        <app-variants :options="options"></app-variants>
+        <br>
+        <app-variantsGenerator :options="options" v-if="(options.length > 0 && !update)"></app-variantsGenerator>
+        <app-variants-editor v-if="update" :updateData="updateData"></app-variants-editor>
     </div>
 
 </template>
 
 <script>
-    import Variants from './components/VariantsGenerator.vue';
+    import VariantsGenerator from './components/VariantsGenerator.vue';
+    import VariantsEditor from './components/VariantsEditor.vue';
+
     export default {
         name: 'app',
         data () {
@@ -38,16 +41,11 @@
                 msg: 'Welcome to Your Vue.js App',
                 newOptionName: '',
                 newOptionValue: '',
-
-                options: [
-                    {name: "Barva", value: "Cervena, Hneda"},
-                    {name: "Velikost", value: "M, L"},
-                    // {name: "Material", value: "Bavlna, Latka"}
-                ],
-
+                options: [],
                 attributes: [
-                    'Napeti', 'Rozpeti', 'Hmotnost', 'Barva', 'Velikost', 'Material'
-                ]
+                    'napeti', 'rozpeti', 'hmotnost', 'barva', 'velikost', 'material'
+                ],
+                update: false
             }
         },
 
@@ -58,6 +56,7 @@
                 this.newOptionValue = '';
             },
             removeOption(index) {
+                console.log("pushed!");
                 this.options.splice(index, 1);
             }
         },
@@ -69,7 +68,7 @@
                 }
 
                 return this.attributes.filter((str) => {
-                    return str.indexOf(this.newOptionName) >= 0;
+                    return str.indexOf(this.newOptionName.toLowerCase()) >= 0;
                 });
             },
 
@@ -77,8 +76,19 @@
                 return this.newOptionName !== "" && this.matches.length !== 0 && this.open === true;
             }
         },
+        created: function () {
+            var options = [];
+            var data = JSON.parse(document.getElementById('updateData').value);
+            if (!data.update) {
+                return;
+            }
+            this.updateData = data;
+            this.update = true;
+        },
+
         components: {
-            appVariants: Variants
+            appVariantsGenerator: VariantsGenerator,
+            appVariantsEditor: VariantsEditor
         }
 
     }
@@ -125,6 +135,10 @@
         position: absolute;
         left: 55em;
         top: 2px;
+    }
+
+    .vue-text-center {
+        text-align: center;
     }
 
 
