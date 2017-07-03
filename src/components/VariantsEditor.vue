@@ -3,6 +3,7 @@
         <table v-if="updateData.update == true" class="table">
             <thead>
             <th>Variant</th>
+            <th>Price</th>
             <th>EAN</th>
             <th v-if="hasStock">In Stock</th>
             </thead>
@@ -14,6 +15,7 @@
                     <input type="hidden" :name="'variant['+index+'][attributes]'" :value='JSON.stringify(variant.attributes)'/>
                     <input type="hidden" :name="'variant['+index+'][exists]'" value="on"/>
                 </td>
+                <td><input class="form-control" :name="'variant['+index+'][price]'" type="number" :value="variant.price"></td>
                 <td><input class="form-control" :name="'variant['+index+'][ean]'" type="number" :value="variant.ean"></td>
                 <td><input class="form-control" v-if="variant.added" :name="'variant['+index+'][in_stock]'" type="number" :value="variant.in_stock"></td>
                 <td><div class="btn btn-sm btn-danger oc-icon-trash" @click="removeVariant(index)"></div></td>

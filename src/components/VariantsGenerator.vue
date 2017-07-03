@@ -3,6 +3,7 @@
         <table class="table table-striped">
             <thead>
                 <th>Variant</th>
+                <th>Price</th>
                 <th>In stock</th>
                 <th>EAN</th>
                 <th>Variant exists</th>
@@ -13,6 +14,7 @@
                         <input type="hidden" :name="'variant['+index+'][attributes]'" :value='JSON.stringify(variant)'/>
                         <span v-for="value in variant">{{value.value}} </span>
                     </td>
+                    <td><input class="form-control" :name="'variant['+index+'][price]'" type="number"></td>
                     <td><input class="form-control" :name="'variant['+index+'][in_stock]'" type="number" value="0"></td>
                     <td><input class="form-control" :name="'variant['+index+'][ean]'" type="number" value="0"></td>
                     <td>
