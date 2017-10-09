@@ -1,30 +1,38 @@
 <template>
     <div id="variantsWidgetApp" class="container">
         <div class="rowtext-center" v-if="!update">
-            <div class="col-xs-5"><input class="form-control" type="text" name="option-name" v-model="newOptionName"
-                                         v-on:keyup.enter="newOptionName = matches[0]"></div>
+            <div class="col-xs-5">
+                <input ref="inputName" placeholder="Název vlastnosti" class="form-control" type="text" name="option-name" v-model="newOptionName"
+                                         v-on:keyup.enter="newOptionName = matches[0]">
+            </div>
             <!--<input type="text" id="search" v-model="matches[0]" disabled="true">-->
-            <div class="col-xs-5"><input class="form-control" type="text" name="option-value" v-model="newOptionValue"
-                                         v-on:keyup.enter="saveNewOption"></div>
+            <div class="col-xs-5">
+                <input placeholder="Hodnoty vlastností (oddělené čárkou)" class="form-control" type="text" name="option-value" v-model="newOptionValue"
+                                         v-on:keyup.enter="saveNewOption">
+            </div>
             <div class="col-xs-1">
-                <a href="#" class="btn btn-primary btn-sm " @click.prevent="saveNewOption">
-                    Add
+                <a href="#" class="btn btn-primary btn-sm oc-icon-plus" @click.prevent="saveNewOption">
+
                 </a>
             </div>
         </div>
         <br>
         <hr>
         <div v-for="(option, index) in options" class="row m-t text-center">
-            <div class="col-xs-5"><input class="form-control" type="text" :name="'options['+index+'][name]'"
-                                         v-model="options[index].name"></div>
-            <div class="col-xs-5"><input class="form-control col-sm-4" type="text" :name="'options['+index+'][value]'"
-                                         v-model="options[index].value"></div>
+            <div class="col-xs-5">
+                <input class="form-control" type="text" :name="'options['+index+'][name]'"
+                                         v-model="options[index].name">
+            </div>
+            <div class="col-xs-5">
+                <input class="form-control col-sm-4" type="text" :name="'options['+index+'][value]'"
+                                         v-model="options[index].value">
+            </div>
             <div class="col-xs-1">
                 <button class="btn btn-danger btn-sm" @click.prevent="removeOption(index)"> X </button>
             </div>
         </div>
         <br>
-        <app-variantsGenerator :options="options" v-if="(options.length > 0 && !update)"></app-variantsGenerator>
+        <app-variantsGenerator :currencySettings="currencySettings" :options="options" v-if="(options.length > 0 && !update)"></app-variantsGenerator>
         <app-variants-editor v-if="update" :updateData="updateData"></app-variants-editor>
     </div>
 
@@ -45,7 +53,8 @@
                 attributes: [
                     'napeti', 'rozpeti', 'hmotnost', 'barva', 'velikost', 'material'
                 ],
-                update: false
+                update: false,
+                currencySettings: {}
             }
         },
 
@@ -54,6 +63,8 @@
                 this.options.push({name: this.newOptionName, value: this.newOptionValue});
                 this.newOptionName = '';
                 this.newOptionValue = '';
+
+                this.$refs.inputName.focus();
             },
             removeOption(index) {
                 console.log("pushed!");
@@ -79,6 +90,7 @@
         created: function () {
             var options = [];
             var data = JSON.parse(document.getElementById('updateData').value);
+            this.currencySettings = data.currencySettings;
             if (!data.update) {
                 return;
             }
@@ -90,7 +102,6 @@
             appVariantsGenerator: VariantsGenerator,
             appVariantsEditor: VariantsEditor
         }
-
     }
 </script>
 

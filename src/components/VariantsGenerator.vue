@@ -2,11 +2,11 @@
     <div>
         <table class="table table-striped">
             <thead>
-                <th>Variant</th>
-                <th>Price</th>
-                <th>In stock</th>
+                <th>Varianta</th>
+                <th>Cena</th>
+                <th>Skladem</th>
                 <th>EAN</th>
-                <th>Variant exists</th>
+                <th>Varianta existuje</th>
             </thead>
             <tbody>
                 <tr v-for="(variant, index) in variantsJSON">
@@ -14,9 +14,9 @@
                         <input type="hidden" :name="'variant['+index+'][attributes]'" :value='JSON.stringify(variant)'/>
                         <span v-for="value in variant">{{value.value}} </span>
                     </td>
-                    <td><input class="form-control" :name="'variant['+index+'][price]'" type="number"></td>
-                    <td><input class="form-control" :name="'variant['+index+'][in_stock]'" type="number" value="0"></td>
-                    <td><input class="form-control" :name="'variant['+index+'][ean]'" type="number" value="0"></td>
+                    <td><input class="form-control price-formatter" :name="'variant['+index+'][price]'" placeholder="Použít obecnou prodejní cenu"></td>
+                    <td><input class="form-control" :name="'variant['+index+'][in_stock]'" type="number" value="0" placeholder="Skladem"></td>
+                    <td><input class="form-control" :name="'variant['+index+'][ean]'" type="number" value="0" placeholder="Identifikacni cislo"></td>
                     <td>
                         <div class="checkbox-inline custom-checkbox">
                             <input :id="'variant['+index+'][exists]'" :name="'variant['+index+'][exists]'" type="checkbox" checked>
@@ -31,10 +31,10 @@
 
 <script>
     export default {
-        props: ['options'],
+        props: ['options', 'currencySettings'],
         data: function(){
             return {
-                variantsArr: [],
+                variantsArr: []
             }
         },
         computed: {
@@ -88,7 +88,19 @@
                 }
                 return cartesian(this.allArrays);
             }
-        }
+        },
+
+        mounted: function() {
+            var priceInput = $('.price-formatter');
+            var decimalSymbol = this.currencySettings.decimalSymbol;
+            var currencySymbol = this.currencySettings.currencySymbol;
+            var format = this.currencySettings.format;
+
+            priceInput.formatCurrency({ 'decimalSymbol': decimalSymbol, 'symbol' : currencySymbol, 'positiveFormat': format, 'digitGroupSymbol': " "});
+            priceInput.blur(function() {
+                priceInput.formatCurrency({ 'decimalSymbol': decimalSymbol, 'symbol' : currencySymbol, 'positiveFormat': format, 'digitGroupSymbol': " "});
+            });
+        },
     }
 
 </script>
